@@ -1,7 +1,12 @@
-from datetime import datetime
+import datetime
 import requests
 
 EXPIRE_FORMAT = '%Y-%m-%dT%H:%M:%S.%fZ'
+
+
+def _almost_expired(expires):
+    now = datetime.datetime.utcnow()
+    return now > expires - datetime.timedelta(hours=1)  # add 1h buffer
 
 
 class CloudFilesSession(requests.Session):
@@ -14,12 +19,13 @@ class CloudFilesSession(requests.Session):
         self._rackspace_credentials = {"username": username, "apiKey": apikey}
         self._rackspace_region = region
         super().__init__()
-        self.update()
 
     def request(self, method, url, *args, **kwargs):
+        if self._expires is None or _almost_expired(self._expires):
+            self.update_token()
         return super().request(method, f"{self._base_url}/{url}", *args, **kwargs)
 
-    def update(self):
+    def update_token(self):
         response = requests.post(
             "https://identity.api.rackspacecloud.com/v2.0/tokens",
             json={"auth": {"RAX-KSKEY:apiKeyCredentials": self._rackspace_credentials}},
@@ -30,7 +36,7 @@ class CloudFilesSession(requests.Session):
         token = access["token"]
         token_id = token["id"]
 
-        self._expires = datetime.strptime(token['expires'], EXPIRE_FORMAT)
+        self._expires = datetime.datetime.strptime(token['expires'], EXPIRE_FORMAT)
 
         endpoints_map = {
             cat["type"]: cat["endpoints"] for cat in access["serviceCatalog"]
