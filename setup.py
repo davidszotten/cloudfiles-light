@@ -1,4 +1,4 @@
-from setuptools import find_packages, setup
+from setuptools import setup
 
 
 def readme():
@@ -13,8 +13,7 @@ setup(
     long_description=readme(),
     license="MIT",
     url="https://github.com/davidszotten/cloudfiles-light",
-    packages=find_packages("src"),
-    package_dir={"": "src"},
+    py_modules=["cloudfiles_light"],
     install_requires=["requests"],
     author="David Szotten",
     author_email="davidszotten@gmail.com",
