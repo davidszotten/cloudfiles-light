@@ -1,7 +1,7 @@
 import datetime
 import requests
 
-EXPIRE_FORMAT = '%Y-%m-%dT%H:%M:%S.%fZ'
+EXPIRE_FORMAT = "%Y-%m-%dT%H:%M:%S.%fZ"
 
 
 def _almost_expired(expires):
@@ -36,7 +36,7 @@ class CloudFilesSession(requests.Session):
         token = access["token"]
         token_id = token["id"]
 
-        self._expires = datetime.datetime.strptime(token['expires'], EXPIRE_FORMAT)
+        self._expires = datetime.datetime.strptime(token["expires"], EXPIRE_FORMAT)
 
         endpoints_map = {
             cat["type"]: cat["endpoints"] for cat in access["serviceCatalog"]
