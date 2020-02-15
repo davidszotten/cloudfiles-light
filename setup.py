@@ -1,4 +1,4 @@
-from setuptools import setup
+from setuptools import find_packages, setup
 
 
 def readme():
@@ -8,13 +8,17 @@ def readme():
 
 setup(
     name="cloudfiles-light",
-    version="0.1",
+    version="0.2",
     description="Lightweight helper for using rackspace cloudfiles",
     long_description=readme(),
     license="MIT",
     url="https://github.com/davidszotten/cloudfiles-light",
-    py_modules=["cloudfiles_light"],
+    packages=find_packages("src"),
+    package_dir={"": "src"},
     install_requires=["requests"],
+    include_package_data=True,
+    package_data={"cloudfiles_light": ["py.typed"]},
+    zip_safe=False,
     author="David Szotten",
     author_email="davidszotten@gmail.com",
     extras_require={

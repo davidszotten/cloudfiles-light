@@ -4,7 +4,7 @@ import requests
 EXPIRE_FORMAT = "%Y-%m-%dT%H:%M:%S.%fZ"
 
 
-def _almost_expired(expires):
+def _almost_expired(expires: datetime.datetime) -> bool:
     now = datetime.datetime.utcnow()
     return now > expires - datetime.timedelta(hours=1)  # add 1h buffer
 
@@ -15,7 +15,7 @@ class CloudFilesSession(requests.Session):
     _base_url = None
     _expires = None
 
-    def __init__(self, username, apikey, region):
+    def __init__(self, username: str, apikey: str, region: str):
         self._rackspace_credentials = {"username": username, "apiKey": apikey}
         self._rackspace_region = region
         super().__init__()
